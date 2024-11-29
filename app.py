@@ -1,11 +1,7 @@
-from modelos.carro import Carro
-from modelos.interface import Interface as i
-    
+from model.interface import Interface
 
 def main():
-        i.apresentar_menu_principal()
-    
+    Interface()
 
 if __name__ == '__main__':
-        
-        main()
+    main()
