@@ -1,4 +1,5 @@
 from model.database import Database
+from datetime import datetime
 
 class Vingador:
     
@@ -105,7 +106,29 @@ class Vingador:
 
     def convocar(self):
         self.convocado = True
+        self.registrar_convocacao()
         return f'{self.nome_heroi} convocado!'
+
+    def registrar_convocacao(self):
+        try:
+            db = Database()
+            db.connect()
+
+            data_convocacao = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            query = """
+            INSERT INTO Convocacao (heroi_id, descricao, data_convocacao)
+            VALUES (%s, %s, %s)
+            """
+            descricao = f"Convocação do herói {self.nome_heroi}"
+            values = (self.id, descricao, data_convocacao)
+            
+            db.execute_query(query, values)
+            print(f"Convocação de {self.nome_heroi} registrada com sucesso!")
+        except Exception as e:
+            print(f"Erro ao registrar a convocação: {e}")
+        finally:
+            db.disconnect()
 
     def prender(self):
         return f'{self.nome_heroi} teve o mandado de prisão emitido!'
@@ -120,15 +143,13 @@ class Vingador:
             db.connect()
 
             query = 'SELECT heroi_id, nome_heroi, nome_real, categoria, poderes, poder_principal, fraquezas, nivel_forca FROM heroi'
-            herois = db.select(query) # retorna uma lista de tuplas
+            herois = db.select(query)  
             for heroi in herois:
                 Vingador(*heroi)
         except Exception as e:
             print(f'Erro: {e}')
         finally:
             db.disconnect()
-
-   
 
     @staticmethod
     def listar_convocados():
@@ -153,10 +174,3 @@ class Vingador:
         for vingador in Vingador.lista_vingadores:
             if vingador.convocado == 'Sim' and vingador.tornozeleira == 'Sim':
                 print(vingador)
-
-    def __str__(self):
-        return f"{self.nome_heroi.ljust(20)} | {self.nome_real.ljust(20)} | {self.categoria.ljust(15)} | {self.prisao_ativa.ljust(15)}"
-
-
-
-

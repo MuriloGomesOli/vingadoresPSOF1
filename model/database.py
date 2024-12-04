@@ -24,6 +24,10 @@ class Database:
         except Error as e:
             print(f'Erro: {e}')
 
+
+
+
+
     def disconnect(self):
         self.connection.close()
         print('Conexão com o banco de dados encerrada com sucesso')

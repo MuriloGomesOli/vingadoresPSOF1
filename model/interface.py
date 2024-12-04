@@ -107,7 +107,6 @@ class Interface:
         nivel_forca = int(input("Nível de Força: "))
 
 
-        # Salva o vingador no banco de dados
         try:
             db = Database()
             db.connect()
@@ -142,14 +141,26 @@ class Interface:
         print(f"Vingador(a) '{nome_heroi}' não encontrado.")
         self.aguardar_enter()
 
-    def aplicar_tornozeleira(self):
-        nome_heroi = capwords(input("Nome do herói: "))
-        for vingador in Vingador.lista_vingadores:
-            if nome_heroi in vingador.nome_heroi or nome_heroi in vingador.nome_real:
-                print(vingador.aplicar_tornozeleira())
-                self.aguardar_enter()
-                return
-        print(f"Vingador(a) '{nome_heroi}' não encontrado.")
+    @staticmethod
+    def aplicar_tornozeleira(heroi_id):
+        db = Database()
+        db.connect() 
+        
+        query_check = "SELECT id FROM convocados WHERE id = %s"
+        result = db.select(query_check, (heroi_id,))
+        
+        if result:
+            data_torno = int(datetime.now().timestamp())  # Pega o timestamp Unix
+            query_insert = """
+                INSERT INTO tornozeleira (heroi_id, data_aplicacao)
+                VALUES (%s, %s)
+            """
+            db.execute_query(query_insert, (heroi_id, data_torno))
+            print(f"Tornozeleira aplicada ao herói com ID {heroi_id} em timestamp {data_torno}")
+        else:
+            print(f"Herói com ID {heroi_id} não encontrado na tabela convocados.")
+        
+        db.disconnect()  
 
     def aplicar_chip_gps(self):
         nome_heroi = capwords(input("Nome do herói: "))
