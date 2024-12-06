@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: vingadores
+-- Host: localhost    Database: vingadores
 -- ------------------------------------------------------
 -- Server version	8.0.35
 
@@ -24,13 +24,13 @@ DROP TABLE IF EXISTS `convocacao`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `convocacao` (
   `id_convocacao` int NOT NULL AUTO_INCREMENT,
-  `heroi_id` int NOT NULL,
+  `idheroi` int NOT NULL,
   `descricao` text NOT NULL,
   `data_convocacao` datetime NOT NULL,
   PRIMARY KEY (`id_convocacao`),
-  KEY `heroi_id` (`heroi_id`),
-  CONSTRAINT `convocacao_ibfk_1` FOREIGN KEY (`heroi_id`) REFERENCES `heroi` (`heroi_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `convocacao_ibfk_1` (`idheroi`),
+  CONSTRAINT `convocacao_ibfk_1` FOREIGN KEY (`idheroi`) REFERENCES `heroi` (`idheroi`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `convocacao` (
 
 LOCK TABLES `convocacao` WRITE;
 /*!40000 ALTER TABLE `convocacao` DISABLE KEYS */;
-INSERT INTO `convocacao` VALUES (1,3,'Convocação do herói Thor','2024-12-04 13:16:04'),(2,4,'Convocação do herói Homem-Aranha','2024-12-04 13:22:23');
+INSERT INTO `convocacao` VALUES (1,3,'Convocação do herói Thor','2024-12-04 13:16:04'),(2,4,'Convocação do herói Homem-Aranha','2024-12-04 13:22:23'),(3,5,'Convocação do herói Coisa','2024-12-06 09:35:27'),(4,6,'Convocação do herói BuzzLight','2024-12-06 12:56:13'),(5,2,'Convocação do herói Homem de Ferro','2024-12-06 13:00:53'),(6,6,'Convocação do herói BuzzLight','2024-12-06 13:25:30');
 /*!40000 ALTER TABLE `convocacao` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-04 15:50:38
+-- Dump completed on 2024-12-06 13:59:37

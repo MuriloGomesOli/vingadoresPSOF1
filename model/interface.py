@@ -142,46 +142,25 @@ class Interface:
         self.aguardar_enter()
 
     
-    def aplicar_tornozeleira(heroi_id):
-        db = Database()
-        db.connect() 
-        
-        query_check = "SELECT id FROM convocados WHERE id = %s"
-        result = db.select(query_check, (heroi_id,))
-        
-        if result:
-            data_torno = int(datetime.now().timestamp())
-            query_insert = """
-                INSERT INTO tornozeleira (heroi_id, data_torno)
-                VALUES (%s, %s)
-            """
-            db.execute_query(query_insert, (heroi_id, data_torno))
-            print(f"Tornozeleira aplicada ao herói com ID {heroi_id} em timestamp {data_torno}")
-        else:
-            print(f"Herói com ID {heroi_id} não encontrado na tabela convocados.")
-        
-        db.disconnect()  
+    def aplicar_tornozeleira(self):
+        nome_heroi = capwords(input("Nome do herói: "))
+        for vingador in Vingador.lista_vingadores:
+            if nome_heroi in vingador.nome_heroi or nome_heroi in vingador.nome_real:
+                print(vingador.tornozelar())
+                self.aguardar_enter()
+                return
+        print(f"Vingador(a) '{nome_heroi}' não encontrado.")
+        self.aguardar_enter()  
 
-    def aplicar_chip_gps(heroi_id, localizacao):
-        db = Database()
-        db.connect()  
-        
-        query_check = "SELECT id, nome_heroi FROM tornozeleira WHERE heroi_id = %s"
-        result = db.select(query_check, (heroi_id,))
-        
-        if result:
-            nome_heroi = result[0][1]
-            data_hora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            query_insert = """
-                INSERT INTO gps (heroi_id, nome_heroi, localizacao, data_hora)
-                VALUES (%s, %s, %s, %s)
-            """
-            db.execute_query(query_insert, (heroi_id, nome_heroi, localizacao, data_hora))
-            print(f"Chip GPS foi aplicado ao herói {nome_heroi} com a localização '{localizacao}' em {data_hora}")
-        else:
-            print(f"Herói com ID {heroi_id} não encontrado na tabela tornozeleira.")
-        
-        db.disconnect()  
+    def aplicar_chip_gps(self):
+        nome_heroi = capwords(input("Nome do herói: "))
+        for vingador in Vingador.lista_vingadores:
+            if nome_heroi in vingador.nome_heroi or nome_heroi in vingador.nome_real:
+                print(vingador.chipizar())
+                self.aguardar_enter()
+                return
+        print(f"Vingador(a) '{nome_heroi}' não encontrado.")
+        self.aguardar_enter()  
     
     @staticmethod
     def listar_herois_com_gps():

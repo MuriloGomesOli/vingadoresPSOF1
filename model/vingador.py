@@ -6,7 +6,7 @@ class Vingador:
     CATEGORIAS_PERMITIDAS = ['Humano', 'Meta-humano', 'Androide', 'Deidade', 'Alienígena']
     lista_vingadores = []
 
-    def __init__(self, id, nome_heroi, nome_real, categoria, poderes, poder_principal, fraquezas, nivel_forca, convocado=False, tornozeleira=False, chip_gps=False):
+    def __init__(self, id, nome_heroi, nome_real, categoria, poderes, poder_principal, fraquezas, nivel_forca, convocado=False, tornozeleira=False, chip_gps=False, prisao = False):
         self.id = id
         self.nome_heroi = nome_heroi
         self.nome_real = nome_real
@@ -18,6 +18,7 @@ class Vingador:
         self._convocado = convocado
         self._tornozeleira = tornozeleira
         self._chip_gps = chip_gps
+        self.prisao = prisao
         self.lista_vingadores.append(self)
 
     @property
@@ -88,26 +89,23 @@ class Vingador:
     def __str__(self):
         return f'{self.nome_real.ljust(20)} |  {self.nome_heroi.ljust(20)} |  {self.categoria.ljust(15)} |  {self.tornozeleira.ljust(15)} |  {self.chip_gps.ljust(15)}'
 
-    def aplicar_tornozeleira(self):
-        if self._convocado:
-            if self.nome_heroi == 'Thor':
-                return '"Eu sou Thor, Deus do Trovão, filho de Odin! Nenhuma corrente ou restrição pode me controlar. \nTentem colocar-me uma tornozeleira, e verão o que acontece quando um deus é desafiado..."'
-            elif self.nome_heroi == 'Hulk':
-                return '"Hulk esmaga! Hulk mais forte tornozeira!"'
-            self.tornozeleira = True
-            return 'Tornozeleira aplicada com sucesso!'
-        return f'{self.nome_heroi} não foi convocado ainda.'
-
-    def aplicar_chip_gps(self):
-        if not self._tornozeleira:
-            return f'{self.nome_heroi} precisa estar com a tornozeleira aplicada.'
-        self.chip_gps = True
-        return 'Chip GPS aplicado com sucesso!'
 
     def convocar(self):
         self.convocado = True
         self.registrar_convocacao()
         return f'{self.nome_heroi} convocado!'
+    def tornozelar(self):
+        self.tornozeleira = True
+        self.registrar_tornozeleira()
+        return f'{self.nome_heroi} está com a tornozeleira!'
+    def chipizar(self):
+        self.chip_gps = True
+        self.registrar_chip()
+        return f'{self.nome_heroi} chipado!'
+    def prender(self):
+        self.prisao = True
+        self.registrar_prisao()
+        return f'{self.nome_heroi} preso!'
 
     def registrar_convocacao(self):
         try:
@@ -129,12 +127,72 @@ class Vingador:
             print(f"Erro ao registrar a convocação: {e}")
         finally:
             db.disconnect()
+    def registrar_chip(self):
+        try:
+            db = Database()
+            db.connect()
 
-    def prender(self):
-        return f'{self.nome_heroi} teve o mandado de prisão emitido!'
+            data_hora = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            query = """
+            INSERT INTO Gps (idheroi, nome_heroi, localizacao, data_hora)
+            VALUES (%s, %s, %s, %s)
+            """
+            localizacao = {"Está na..."}  # Isso parece ser um exemplo, por favor, ajuste conforme necessário
+            nome_heroi = f"{self.nome_heroi}"
+            values = (self.id, nome_heroi, localizacao, data_hora)
+            
+            db.execute_query(query, values)
+            print(f"Chip de {self.nome_heroi} registrado com sucesso!")
+        except Exception as e:
+            print(f"Erro ao registrar o chip: {e}")
+        finally:
+            db.disconnect()
 
-    def listar_poderes(self):
-        return self.poderes
+    
+    def registrar_prisao(self):
+        try:
+            db = Database()
+            db.connect()
+
+            data = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            query = """
+            INSERT INTO Prisao (idheroi, motivo, data)
+            VALUES (%s, %s, %s)
+            """
+            motivo = f"Prisão do herói {self.nome_heroi}"
+            values = (self.id, motivo, data)
+            
+            db.execute_query(query, values)
+            print(f"Prisão de {self.nome_heroi} registrada com sucesso!")
+        except Exception as e:
+            print(f"Erro ao registrar a prisão: {e}")
+        finally:
+            db.disconnect()
+
+
+    def registrar_tornozeleira(self):
+        try:
+            db = Database()
+            db.connect()
+
+            data_torno = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            query = """
+            INSERT INTO tornozeleira (idheroi, data_torno)
+            VALUES (%s, %s)
+            """
+            values = (self.id, data_torno)
+            
+            db.execute_query(query, values)
+            print(f"Tornozeleira de {self.nome_heroi} registrada com sucesso!")
+        except Exception as e:
+            print(f"Erro ao registrar a convocação: {e}")
+        finally:
+            db.disconnect()
+
+
     
     @staticmethod
     def carregar_herois():
@@ -142,7 +200,7 @@ class Vingador:
             db = Database()
             db.connect()
 
-            query = 'SELECT heroi_id, nome_heroi, nome_real, categoria, poderes, poder_principal, fraquezas, nivel_forca FROM heroi'
+            query = 'SELECT idheroi, nome_heroi, nome_real, categoria, poderes, poder_principal, fraquezas, nivel_forca FROM heroi'
             herois = db.select(query)  
             for heroi in herois:
                 Vingador(*heroi)
@@ -150,6 +208,7 @@ class Vingador:
             print(f'Erro: {e}')
         finally:
             db.disconnect()
+
 
     @staticmethod
     def listar_convocados():

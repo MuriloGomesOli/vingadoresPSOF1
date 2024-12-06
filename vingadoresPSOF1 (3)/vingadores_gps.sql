@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: vingadores
+-- Host: localhost    Database: vingadores
 -- ------------------------------------------------------
 -- Server version	8.0.35
 
@@ -16,29 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `heroi_fraqueza`
+-- Table structure for table `gps`
 --
 
-DROP TABLE IF EXISTS `heroi_fraqueza`;
+DROP TABLE IF EXISTS `gps`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `heroi_fraqueza` (
-  `heroi_id` int NOT NULL,
-  `fraqueza_id` int NOT NULL,
-  PRIMARY KEY (`heroi_id`,`fraqueza_id`),
-  KEY `fraqueza_id` (`fraqueza_id`),
-  CONSTRAINT `heroi_fraqueza_ibfk_1` FOREIGN KEY (`heroi_id`) REFERENCES `heroi` (`heroi_id`) ON DELETE CASCADE,
-  CONSTRAINT `heroi_fraqueza_ibfk_2` FOREIGN KEY (`fraqueza_id`) REFERENCES `fraqueza` (`id_fraqueza`) ON DELETE CASCADE
+CREATE TABLE `gps` (
+  `id_gps` int NOT NULL AUTO_INCREMENT,
+  `idheroi` int DEFAULT NULL,
+  `nome_heroi` varchar(45) DEFAULT NULL,
+  `localizacao` varchar(255) DEFAULT NULL,
+  `data_hora` datetime DEFAULT NULL,
+  PRIMARY KEY (`id_gps`),
+  KEY `heroigps_idx` (`idheroi`),
+  CONSTRAINT `heroigps` FOREIGN KEY (`idheroi`) REFERENCES `heroi` (`idheroi`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `heroi_fraqueza`
+-- Dumping data for table `gps`
 --
 
-LOCK TABLES `heroi_fraqueza` WRITE;
-/*!40000 ALTER TABLE `heroi_fraqueza` DISABLE KEYS */;
-/*!40000 ALTER TABLE `heroi_fraqueza` ENABLE KEYS */;
+LOCK TABLES `gps` WRITE;
+/*!40000 ALTER TABLE `gps` DISABLE KEYS */;
+/*!40000 ALTER TABLE `gps` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-04 15:50:37
+-- Dump completed on 2024-12-06 13:59:38
